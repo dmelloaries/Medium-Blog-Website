@@ -9,25 +9,30 @@ const app = new Hono<{
 }>();
 
 app.post('/api/v1/signup', async (c) => {
-  const prisma = new PrismaClient({
-    datasourceUrl: c.env.DATABASE_URL,
-  }).$extends(withAccelerate());
-
-  const body = await c.req.json();
-  try {
-    const user = await prisma.user.create({
-      data: {
-        email: body.email,
-        password: body.password
-      },
-    });
-
-    
-  } catch (e) {
-    console.error(e); 
-    return c.status(403)
-  } 
-});
+	const prisma = new PrismaClient({
+	  datasourceUrl: c.env.DATABASE_URL,
+	}).$extends(withAccelerate());
+  
+	const body = await c.req.json();
+	console.log(body);
+	
+	try {
+	  const user = await prisma.user.create({
+		data: {
+		  email: body.email,
+		  password: body.password
+		},
+	  });
+	  console.log(user);
+  
+	  return c.json({user})
+	  
+	  
+	} catch (e) {
+	  console.error(e); 
+	  return c.status(403)
+	} 
+  });
 
 app.get('/', (c) => {
   return c.text('home page');
